@@ -34,10 +34,13 @@ pub use movement::{
 
 pub use animation::PlayerAnimationEvent;
 
+pub use self::inventory::{InventoryComponent, InventoryUpdateEvent};
 pub use digging::PlayerItemDropEvent;
-pub use inventory::{InventoryComponent, InventoryUpdateEvent};
 pub use save::save_player_data;
 
+use self::inventory::{
+    CreativeInventorySystem, EquipmentSendSystem, HeldItemBroadcastSystem, HeldItemChangeSystem,
+};
 use crate::player::inventory::SetSlotSystem;
 use crate::player::placement::BlockPlacementSystem;
 use crate::player::save::PlayerDataSaveSystem;
@@ -55,9 +58,6 @@ use chat::{ChatBroadcastSystem, PlayerChatSystem};
 use digging::BlockUpdateBroadcastSystem;
 use digging::PlayerDiggingSystem;
 use init::PlayerInitSystem;
-use inventory::{
-    CreativeInventorySystem, EquipmentSendSystem, HeldItemBroadcastSystem, HeldItemChangeSystem,
-};
 use movement::{ChunkSendSystem, ClientChunkUnloadSystem, PlayerMovementSystem};
 use resource_pack::ResourcePackSendSystem;
 use specs::DispatcherBuilder;

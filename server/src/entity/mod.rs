@@ -2,6 +2,7 @@
 //! and `PlayerComponent`. In the future, will also
 //! provide entity-specific components and systems.
 
+mod block;
 mod broadcast;
 mod chunk;
 mod component;
@@ -20,6 +21,7 @@ use crate::systems::{
     ITEM_SPAWN, JOIN_BROADCAST, SHOOT_ARROW,
 };
 pub use arrow::{ArrowComponent, ShootArrowEvent};
+pub use block::{BlockEntityCreator, BlockEntityRegistration, BlockPositionComponent};
 pub use broadcast::send_entity_to_player;
 pub use broadcast::{EntitySendEvent, EntitySpawnEvent};
 pub use chunk::ChunkEntities;
@@ -33,7 +35,6 @@ pub use falling_block::FallingBlockComponent;
 pub use item::ItemComponent;
 pub use metadata::{EntityBitMask, Metadata};
 pub use movement::{degrees_to_stops, LastKnownPositionComponent};
-
 pub use save::save_chunks;
 
 use crate::entity::arrow::ShootArrowSystem;

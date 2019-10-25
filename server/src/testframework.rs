@@ -21,9 +21,10 @@ use crate::chunk_logic::{ChunkHolders, ChunkLoadSystem};
 use crate::config::Config;
 use crate::entity::metadata::{self, Metadata};
 use crate::entity::{
-    ArrowComponent, ChunkEntities, EntityDestroyEvent, EntitySendEvent, EntitySpawnEvent,
-    ItemComponent, LastKnownPositionComponent, NamedComponent, PacketCreatorComponent,
-    PlayerComponent, PositionComponent, SerializerComponent, VelocityComponent,
+    ArrowComponent, BlockPositionComponent, ChunkEntities, EntityDestroyEvent, EntitySendEvent,
+    EntitySpawnEvent, ItemComponent, LastKnownPositionComponent, NamedComponent,
+    PacketCreatorComponent, PlayerComponent, PositionComponent, SerializerComponent,
+    VelocityComponent,
 };
 use crate::io::ServerToWorkerMessage;
 use crate::network::{NetworkComponent, PacketQueue};
@@ -370,6 +371,7 @@ fn register_components(world: &mut World) {
     world.register::<ArrowComponent>();
     world.register::<PacketCreatorComponent>();
     world.register::<SerializerComponent>();
+    world.register::<BlockPositionComponent>();
 
     world
         .entry()
