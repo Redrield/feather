@@ -5,7 +5,7 @@
 use crate::chunk_logic::ChunkLoadEvent;
 use crate::entity::{
     arrow, chicken, cow, donkey, horse, item, llama, mooshroom, pig, rabbit, sheep, squid,
-    EntityDestroyEvent, EntitySpawnEvent, PositionComponent,
+    BlockPositionComponent, EntityDestroyEvent, EntitySpawnEvent, PositionComponent,
 };
 use crate::TickCount;
 use feather_core::entity::EntityData;
@@ -128,6 +128,7 @@ pub struct ChunkEntityUpdateSystem {
 impl<'a> System<'a> for ChunkEntityUpdateSystem {
     type SystemData = (
         ReadStorage<'a, PositionComponent>,
+        ReadStorage<'a, BlockPositionComponent>,
         Write<'a, ChunkEntities>,
         Read<'a, EventChannel<EntitySpawnEvent>>,
         Read<'a, EventChannel<EntityDestroyEvent>>,
@@ -135,7 +136,8 @@ impl<'a> System<'a> for ChunkEntityUpdateSystem {
     );
 
     fn run(&mut self, data: Self::SystemData) {
-        let (positions, mut entity_chunks, spawn_events, destroy_events, entities) = data;
+        let (positions, block_positions, mut entity_chunks, spawn_events, destroy_events, entities) =
+            data;
 
         self.dirty.clear();
         for event in positions.channel().read(self.move_reader.as_mut().unwrap()) {
@@ -157,6 +159,8 @@ impl<'a> System<'a> for ChunkEntityUpdateSystem {
         for event in spawn_events.read(self.spawn_reader.as_mut().unwrap()) {
             if let Some(pos) = positions.get(event.entity) {
                 entity_chunks.add_to_chunk(pos.current.chunk_pos(), event.entity);
+            } else if let Some(pos) = block_positions.get(event.entity).map(|pos| pos.world_pos()) {
+                entity_chunks.add_to_chunk(pos.chunk_pos(), event.entity);
             }
         }
 
