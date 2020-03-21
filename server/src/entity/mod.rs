@@ -5,6 +5,7 @@
 
 pub mod falling_block;
 pub mod item;
+pub mod effect;
 
 use crate::game::Game;
 use feather_core::entity::EntityData;
