@@ -23,6 +23,10 @@ use crate::entity::item::{on_item_drop_spawn_item_entity, ItemCollectEvent, Item
 use crate::entity::{Name, EntityId};
 use crate::io::{NetworkIoManager, NewClientInfo, ServerToWorkerMessage};
 use crate::join::{on_chunk_send_join_player, on_player_join_send_join_game};
+use crate::lighting::{
+    on_block_update_notify_lighting_worker, on_chunk_load_notify_lighting_worker,
+    on_chunk_unload_notify_lighting_worker, LightingWorkerHandle,
+};
 use crate::network::Network;
 use crate::p_inventory::InventoryUpdateEvent;
 use crate::physics::EntityPhysicsLandEvent;
@@ -88,6 +92,7 @@ pub struct Game {
     pub(super) rng: CachedThreadLocal<RefCell<XorShiftRng>>,
     pub time: Time,
     pub save_queue: SaveQueue,
+    pub lighting_worker_handle: LightingWorkerHandle,
 }
 
 impl Game {
@@ -238,11 +243,12 @@ impl Game {
         &mut self,
         world: &mut World,
         pos: BlockPosition,
-        _old: Block,
+        old: Block,
         new: Block,
     ) {
         on_block_update_notify_adjacent(self, world, pos);
         on_block_update_broadcast(self, world, pos, new);
+        on_block_update_notify_lighting_worker(self, pos, old, new);
     }
 
     /// Called when an entity is despawned/removed.
@@ -302,6 +308,7 @@ impl Game {
 
     /// Called when a chunk loads successfully.
     pub fn on_chunk_load(&mut self, world: &mut World, chunk: ChunkPosition) {
+        on_chunk_load_notify_lighting_worker(self, chunk);
         on_chunk_load_send_to_clients(self, world, chunk);
         on_chunk_load_queue_for_saving(self, chunk);
     }
@@ -311,6 +318,7 @@ impl Game {
     /// This is called _before_ the chunk is removed from the chunk map.
     pub fn on_chunk_unload(&mut self, world: &mut World, chunk: ChunkPosition) {
         on_chunk_unload_save_chunk(self, world, chunk);
+        on_chunk_unload_notify_lighting_worker(self, chunk);
     }
 
     /// Called when a chunk fails to load.

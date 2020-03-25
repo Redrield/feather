@@ -20,7 +20,7 @@ feather-item-block = { path = "../item_block" }
 feather-codegen = { path = "../codegen" }
 
 # Core ECS + systems
-fecs = { git = "https://github.com/feather-rs/fecs", rev = "20d54b0ff8b11fbb76f55fec012e4feb66e20c42" }
+fecs = { git = "https://github.com/feather-rs/fecs", rev = "3a27d8434e0734efcc309ec0aa764bfb699c271d" }
 # fecs = { path = "../../../dev/fecs" }
 
 # Concurrency/threading
@@ -76,6 +76,7 @@ hematite-nbt = "0.4"
 
 # RNGs
 rand = "0.7"
+rand_distr = "0.2.2"
 rand_xorshift = "0.2"
 
 # Other
