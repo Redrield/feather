@@ -33,16 +33,16 @@ pub enum StatusEffect {
     ConduitPower,
     DolphinsGrace,
     BadOmen,
-    HeroOfTheVillage
+    HeroOfTheVillage,
 }
 
 impl StatusEffect {
-    pub fn protocol_id(self) -> u8 {
-        self.to_u8().unwrap()
+    pub fn protocol_id(self) -> i8 {
+        self.to_i8().unwrap() + 1
     }
 
-    pub fn from_protocol_id(id: u8) -> Option<StatusEffect> {
-        Self::from_u8(id)
+    pub fn from_protocol_id(id: i8) -> Option<StatusEffect> {
+        Self::from_i8(id - 1)
     }
 
     pub fn identifier(self) -> &'static str {

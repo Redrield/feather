@@ -3,7 +3,7 @@
 use crate::broadcasters::LastKnownPositions;
 use crate::chunk_logic::ChunkHolder;
 use crate::entity;
-use crate::entity::{CreationPacketCreator, EntityId, Name, PreviousPosition, SpawnPacketCreator};
+use crate::entity::{CreationPacketCreator, EntityId, Name, PreviousPosition, SpawnPacketCreator, EntityProperties};
 use crate::io::NewClientInfo;
 use crate::network::Network;
 use crate::p_inventory::EntityInventory;
@@ -13,6 +13,7 @@ use feather_core::{Gamemode, Packet, Position};
 use fecs::{Entity, EntityRef, World};
 use mojang_api::ProfileProperty;
 use uuid::Uuid;
+use crate::entity::effect::EntityBasicStatusEffects;
 
 pub const PLAYER_EYE_HEIGHT: f64 = 1.62;
 
@@ -57,6 +58,7 @@ pub fn create(world: &mut World, info: NewClientInfo) -> Entity {
         .unwrap();
     world.add(entity, Gamemode::Creative).unwrap(); // TODO: proper gamemode handling
     world.add(entity, EntityInventory::default()).unwrap();
+    world.add(entity, EntityProperties::new()).unwrap();
     world.add(entity, Player).unwrap();
     entity
 }

@@ -11,6 +11,8 @@ use feather_core::network::packet::implementation::{PlayerDigging, PlayerDigging
 use feather_core::{Block, Gamemode, Item};
 use fecs::{Entity, World};
 use std::sync::Arc;
+use crate::entity::EntityId;
+use crate::entity::effect::SpeedEffect;
 
 /// System responsible for polling for PlayerDigging
 /// packets and writing the corresponding events.
@@ -84,6 +86,8 @@ fn handle_digging(game: &mut Game, world: &mut World, player: Entity, packet: Pl
         }
     }
 
+//    let eid = *world.get::<EntityId>(player);
+//    world.add(player, SpeedEffect::new(eid, 3, 60 * 20));
     if !game.set_block_at(world, packet.location, Block::Air) {
         game.disconnect(player, world, "attempted to break block in unloaded chunk");
         return;

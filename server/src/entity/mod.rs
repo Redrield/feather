@@ -3,13 +3,14 @@
 //! block entities, monsters, etc. Player entities are handled in `crate::player`,
 //! not here.
 
+pub mod effect;
 pub mod falling_block;
 pub mod item;
-pub mod effect;
+pub mod properties;
 
 use crate::game::Game;
 use feather_core::entity::EntityData;
-use feather_core::{Packet, Position};
+use feather_core::{Packet, Position, EntityProperty};
 use fecs::{EntityBuilder, EntityRef, IntoQuery, Read, World, Write};
 use std::ops::{Deref, DerefMut};
 use std::sync::atomic::{AtomicI32, Ordering};
@@ -121,6 +122,32 @@ impl CreationPacketCreator {
         f(accessor)
     }
 }
+
+pub struct EntityProperties {
+    pub inner: feather_core::EntityProperties,
+    pub dirty: bool
+}
+
+impl EntityProperties {
+    pub fn new() -> EntityProperties {
+        Self { inner: feather_core::EntityProperties::new(), dirty: false }
+    }
+
+    pub fn add_property(&mut self, key: String, property: EntityProperty) {
+        self.inner.props.insert(key, property);
+        self.dirty = true;
+    }
+
+    pub fn get_property(&self, key: &str) -> Option<&EntityProperty> {
+        self.inner.props.get(key)
+    }
+
+    pub fn get_property_mut(&mut self, key: &str) -> Option<&mut EntityProperty> {
+        self.dirty = true;
+        self.inner.props.get_mut(key)
+    }
+}
+
 
 pub trait ComponentSerializerFn:
     Fn(&Game, &EntityRef) -> EntityData + Send + Sync + 'static

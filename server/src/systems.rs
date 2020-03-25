@@ -17,6 +17,8 @@ pub fn build_executor() -> Executor {
         .with(packet_handlers::handle_chat)
         .with(weather::handle_weather)
         .with(entity::item::item_collect)
+        .with(entity::effect::update_speed_effects)
+        .with(entity::properties::poll_entity_properties_changed)
         .with(chunk_logic::chunk_load)
         .with(chunk_logic::chunk_unload)
         .with(chunk_logic::chunk_optimize)

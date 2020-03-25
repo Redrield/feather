@@ -12,6 +12,7 @@ mod block;
 mod chat;
 mod entity_creation;
 mod entity_deletion;
+mod entity_effect;
 mod inventory;
 mod item_collect;
 mod keepalive;

@@ -3,10 +3,7 @@ use crate::entitymeta::{EntityMetaRead, EntityMetaWrite, EntityMetadata};
 use crate::inventory::ItemStack;
 use crate::mctypes::{McTypeRead, McTypeWrite};
 use crate::network::packet::{AsAny, PacketBuilder, PacketStage};
-use crate::{
-    chunk, Biome, BitArray, BlockPosition, Chunk, ChunkPosition, ChunkSection,
-    ClientboundAnimation, Gamemode, Hand, Packet, PacketType,
-};
+use crate::{chunk, Biome, BitArray, BlockPosition, Chunk, ChunkPosition, ChunkSection, ClientboundAnimation, Gamemode, Hand, Packet, PacketType, EntityPropertyRead, EntityPropertyWrite};
 use bytes::{Buf, BufMut, BytesMut};
 use hashbrown::HashMap;
 use num_traits::{FromPrimitive, ToPrimitive};
@@ -151,6 +148,8 @@ lazy_static! {
             UseBed,
             DestroyEntities,
             RemoveEntityEffect,
+            EntityEffect,
+            EntityProperties,
             ResourcePackSend,
             Respawn,
             EntityHeadLook,
@@ -2056,6 +2055,48 @@ impl Packet for DestroyEntities {
 
     fn box_clone(&self) -> Box<dyn Packet> {
         box_clone_impl!(self);
+    }
+}
+
+#[derive(Default, AsAny, Packet, Clone)]
+pub struct EntityEffect {
+    pub entity_id: VarInt,
+    pub effect_id: i8,
+    pub amplifier: i8,
+    pub duration: VarInt,
+    pub flags: i8,
+}
+
+#[derive(Default, AsAny, Clone)]
+pub struct EntityProperties {
+    pub entity_id: VarInt,
+    pub properties: crate::EntityProperties,
+}
+
+impl Packet for EntityProperties {
+    fn read_from(&mut self, buf: &mut Cursor<&[u8]>) -> anyhow::Result<()> {
+        self.entity_id = buf.try_get_var_int()?;
+        self.properties = buf.try_get_properties()?;
+
+        Ok(())
+    }
+
+    fn write_to(&self, buf: &mut BytesMut) {
+        buf.push_var_int(self.entity_id);
+        buf.push_properties(&self.properties);
+    }
+
+    fn ty(&self) -> PacketType {
+        PacketType::EntityProperties
+    }
+
+    fn ty_sized() -> PacketType where
+        Self: Sized {
+        PacketType::EntityProperties
+    }
+
+    fn box_clone(&self) -> Box<dyn Packet> {
+        box_clone_impl!(self)
     }
 }
 

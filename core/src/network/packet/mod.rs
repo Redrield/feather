@@ -594,6 +594,23 @@ lazy_static! {
             PacketType::CollectItem,
         );
 
+        m.insert(
+            PacketId(0x36, PacketDirection::Clientbound, PacketStage::Play),
+            PacketType::RemoveEntityEffect
+        );
+
+        m.insert(
+            PacketId(0x52, PacketDirection::Clientbound, PacketStage::Play),
+            PacketType::EntityProperties
+        );
+
+        m.insert(
+            PacketId(0x53, PacketDirection::Clientbound, PacketStage::Play),
+            PacketType::EntityEffect
+        );
+
+
+
         m
     };
     static ref PACKET_TYPE_MAPPINGS: HashMap<PacketType, PacketId> = {

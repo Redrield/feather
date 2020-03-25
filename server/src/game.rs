@@ -20,13 +20,13 @@ use crate::chunk_logic::{
 use crate::config::Config;
 use crate::entity::falling_block::on_entity_land_remove_falling_block;
 use crate::entity::item::{on_item_drop_spawn_item_entity, ItemCollectEvent, ItemDropEvent};
-use crate::entity::Name;
+use crate::entity::{Name, EntityId};
 use crate::io::{NetworkIoManager, NewClientInfo, ServerToWorkerMessage};
 use crate::join::{on_chunk_send_join_player, on_player_join_send_join_game};
 use crate::network::Network;
 use crate::p_inventory::InventoryUpdateEvent;
 use crate::physics::EntityPhysicsLandEvent;
-use crate::player;
+use crate::{player, TPS};
 use crate::player::Player;
 use crate::save::{on_chunk_load_queue_for_saving, on_chunk_unload_save_chunk, SaveQueue};
 use crate::time::{on_player_join_send_time, Time};
@@ -41,7 +41,7 @@ use bumpalo::Bump;
 use feather_blocks::Block;
 use feather_core::level::LevelData;
 use feather_core::world::ChunkMap;
-use feather_core::{BlockPosition, ChunkPosition, ClientboundAnimation, Packet, Position};
+use feather_core::{BlockPosition, ChunkPosition, ClientboundAnimation, Packet, Position, StatusEffect};
 use fecs::{Entity, IntoQuery, Read, World};
 use rand::{Rng, SeedableRng};
 use rand_xorshift::XorShiftRng;
@@ -50,6 +50,7 @@ use std::fmt::Display;
 use std::sync::atomic::{AtomicU32, Ordering};
 use std::sync::Arc;
 use thread_local::CachedThreadLocal;
+use crate::entity::effect::{EntityBasicStatusEffects, BasicStatusEffect, EffectFlags, SpeedEffect};
 
 /// Uber-resource storing almost all data needed to run the game.
 ///
