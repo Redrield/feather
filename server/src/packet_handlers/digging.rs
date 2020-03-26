@@ -81,8 +81,8 @@ fn handle_digging(game: &mut Game, world: &mut World, player: Entity, packet: Pl
         }
     }
 
-//    let eid = *world.get::<EntityId>(player);
-//    world.add(player, SpeedEffect::new(eid, 3, 60 * 20));
+    let eid = *world.get::<EntityId>(player);
+    world.add(player, SpeedEffect::new(eid, 3, 60 * 20));
     if !game.set_block_at(world, packet.location, Block::Air) {
         game.disconnect(player, world, "attempted to break block in unloaded chunk");
         return;
